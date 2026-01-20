@@ -36,7 +36,6 @@ gif = [
     'https://te.legra.ph/file/702ca8761c3fd9c1b91e8.mp4'
 ]
 
-
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Main process ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 @app.on_chat_join_request(filters.group | filters.channel & ~filters.private)
@@ -49,11 +48,11 @@ async def approve(_, m : Message):
         img = random.choice(gif)
         await app.send_video(kk.id,img, "**Hello {}!\nWelcome To {}\n\n__Powered By : @MetroHDmovies__**".format(m.from_user.mention, m.chat.title))
         add_user(kk.id)
-    except errors.PeerIdInvalid as e:
+    except errors.PeerIdInvalid:
         print("user isn't start bot(means group)")
     except Exception as err:
         print(str(err))    
- 
+
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Start ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 @app.on_message(filters.command("start"))
@@ -61,20 +60,37 @@ async def op(_, m :Message):
     try:
         await app.get_chat_member(cfg.CHID, m.from_user.id) 
         if m.chat.type == enums.ChatType.PRIVATE:
-            keyboard = InlineKeyboardMarkup(
-                [
+            if m.from_user.id in cfg.SUDO:
+                keyboard = InlineKeyboardMarkup(
                     [
-                        InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
-                        InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
-                    ],[
-                        InlineKeyboardButton("➕ Add me to your Chat ➕", url="https://t.me/Metroapprovalbot?startgroup")
+                        [
+                            InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
+                            InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
+                        ],
+                        [
+                            InlineKeyboardButton("➕ Add me to your Chat ➕", url="https://t.me/Metroapprovalbot?startgroup")
+                        ]
                     ]
-                ]
-            )
+                )
+            else:
+                keyboard = InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
+                            InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
+                        ],
+                        [
+                            InlineKeyboardButton("➕ Add me to your Chat ➕", callback_data="restricted")
+                        ]
+                    ]
+                )
+
             add_user(m.from_user.id)
-            await m.reply_photo("https://te.legra.ph/file/d1f437de4eeb3861075d5.jpg", caption="**🦊 Hello {}!\nI'm an auto approve [Admin Join Requests]({}) Bot.\nI can approve users in Groups/Channels. Add me to your chat and promote me to admin with add members permission.\n\n__Powered By : @MetroHDmovies__**".format(m.from_user.mention, "https://t.me/telegram/153"), reply_markup=keyboard)
+            await m.reply_photo("https://te.legra.ph/file/d1f437de4eeb3861075d5.jpg",
+                caption="**🦊 Hello {}!\nI'm an auto approve [Admin Join Requests]({}) Bot.\nI can approve users in Groups/Channels. Add me to your chat and promote me to admin with add members permission.\n\n__Powered By : @MetroHDmovies__**".format(m.from_user.mention, "https://t.me/telegram/153"),
+                reply_markup=keyboard)
     
-        elif m.chat.type == enums.ChatType.GROUP or enums.ChatType.SUPERGROUP:
+        elif m.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
             keyboard = InlineKeyboardMarkup(
                 [
                     [
@@ -83,7 +99,7 @@ async def op(_, m :Message):
                 ]
             )
             add_group(m.chat.id)
-            await m.reply_text("**🦊 Hello {}!\nwrite me private for more details**".format(m.from_user.first_name), reply_markup=keyboar)
+            await m.reply_text("**🦊 Hello {}!\nwrite me private for more details**".format(m.from_user.first_name), reply_markup=keyboard)
         print(m.from_user.first_name +" Is started Your Bot!")
 
     except UserNotParticipant:
@@ -103,21 +119,42 @@ async def chk(_, cb : CallbackQuery):
     try:
         await app.get_chat_member(cfg.CHID, cb.from_user.id)
         if cb.message.chat.type == enums.ChatType.PRIVATE:
-            keyboard = InlineKeyboardMarkup(
-                [
+            if cb.from_user.id in cfg.SUDO:
+                keyboard = InlineKeyboardMarkup(
                     [
-                        InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
-                        InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
-                    ],[
-                        InlineKeyboardButton("➕ Add me to your Chat ➕", url="https://t.me/Metroapprovalbot?startgroup")
+                        [
+                            InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
+                            InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
+                        ],
+                        [
+                            InlineKeyboardButton("➕ Add me to your Chat ➕", url="https://t.me/Metroapprovalbot?startgroup")
+                        ]
                     ]
-                ]
-            )
+                )
+            else:
+                keyboard = InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("🗯 Channel", url="https://t.me/MetroHDmovies"),
+                            InlineKeyboardButton("💬 Support", url="https://t.me/MetroSupportGroup")
+                        ],
+                        [
+                            InlineKeyboardButton("➕ Add me to your Chat ➕", callback_data="restricted")
+                        ]
+                    ]
+                )
+
             add_user(cb.from_user.id)
             await cb.message.edit("**🦊 Hello {}!\nI'm an auto approve [Admin Join Requests]({}) Bot.\nI can approve users in Groups/Channels. Add me to your chat and promote me to admin with add members permission.\n\n__Powered By : @MetroHDmovies__**".format(cb.from_user.mention, "https://t.me/telegram/153"), reply_markup=keyboard, disable_web_page_preview=True)
         print(cb.from_user.first_name +" Is started Your Bot!")
     except UserNotParticipant:
         await cb.answer("🙅‍♂️ You are not joined to channel join and try again. 🙅‍♂️")
+
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ restricted handler ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+@app.on_callback_query(filters.regex("restricted"))
+async def restricted_mode(_, cb: CallbackQuery):
+    await cb.answer("🚫 You are not authorised to use me.", show_alert=True)
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ info ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
