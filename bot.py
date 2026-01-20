@@ -75,7 +75,7 @@ async def op(_, m :Message):
             await m.reply_photo("https://te.legra.ph/file/d1f437de4eeb3861075d5.jpg", caption="**🦊 Hello {}!\nI'm an auto approve [Admin Join Requests]({}) Bot.\nI can approve users in Groups/Channels. Add me to your chat and promote me to admin with add members permission.\n\n__Powered By : @MetroHDmovies__**".format(m.from_user.mention, "https://t.me/telegram/153"), reply_markup=keyboard)
     
         elif m.chat.type == enums.ChatType.GROUP or enums.ChatType.SUPERGROUP:
-            keyboar = InlineKeyboardMarkup(
+            keyboard = InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton("💁‍♂️ Start me private 💁‍♂️", url="https://t.me/Metroapprovalbot?start=start")
