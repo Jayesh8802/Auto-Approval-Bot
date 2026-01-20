@@ -5,6 +5,8 @@ from pyrogram.errors.exceptions.flood_420 import FloodWait
 from database import add_user, add_group, all_users, all_groups, users, remove_user
 from configs import cfg
 import random, asyncio
+import os, threading
+from flask import Flask
 
 app = Client(
     "approver",
@@ -13,6 +15,13 @@ app = Client(
     bot_token=cfg.BOT_TOKEN
 )
 
+# Flask app for Koyeb health check
+flask_app = Flask(__name__)
+
+@flask_app.route("/")
+def health():
+    return "OK", 200
+    
 gif = [
     'https://te.legra.ph/file/a1b3d4a7b5fce249902f7.mp4',
     'https://te.legra.ph/file/0c855143a4039108df602.mp4',
@@ -188,4 +197,12 @@ async def fcast(_, m : Message):
     await lel.edit(f"✅Successfull to `{success}` users.\n❌ Faild to `{failed}` users.\n👾 Found `{blocked}` Blocked users \n👻 Found `{deactivated}` Deactivated users.")
 
 print("I'm Alive Now!")
-app.run()
+
+def run_pyrogram():
+    app.run()
+
+# Run Pyrogram in a background thread
+threading.Thread(target=run_pyrogram).start()
+
+# Start Flask server on the port Koyeb expects
+flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
