@@ -8,9 +8,6 @@ class Config:
     CHID = int(getenv("CHID", "-1000112234"))
     SUDO = list(map(int, getenv("SUDO").split()))
     MONGO_URI = getenv("MONGO_URI", "")
-    
-    # Toggle for Add-to-Chat availability (default True)
-    ADD_TO_CHAT_ACTIVE = getenv("ADD_TO_CHAT_ACTIVE", "True").strip().lower() in ["true", "1", "yes"]
 
 
 cfg = Config()
