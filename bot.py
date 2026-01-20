@@ -198,11 +198,11 @@ async def fcast(_, m : Message):
 
 print("I'm Alive Now!")
 
-def run_pyrogram():
-    app.run()
+def run_flask():
+    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
-# Run Pyrogram in a background thread
-threading.Thread(target=run_pyrogram).start()
+# Run Flask in a background thread
+threading.Thread(target=run_flask).start()
 
-# Start Flask server on the port Koyeb expects
-flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+# Run Pyrogram in the main thread
+app.run()
